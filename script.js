@@ -4,6 +4,7 @@ const gridSetBtn64 = document.querySelector('#large-grid');
 const randomColorBtn = document.querySelector('#random-color-btn');
 const rootCssVariables = document.querySelector(':root');
 
+
 let gridSize = 16;
 
 for (let i = 0; i < gridSize*gridSize; i++) {
@@ -20,6 +21,7 @@ pixels.forEach((element) => element.addEventListener('click', paintPixel));
 randomColorBtn.addEventListener('click', randomPaintColor);
 
 function paintPixel(){
+    randomPaintColor(this);
     this.classList.add('painted');
 }
 
@@ -33,7 +35,9 @@ function generateRandomColor() {
     return `#${red}${green}${blue}`;
 }
 
-function randomPaintColor() {
+function randomPaintColor(pixel) {
     let color = generateRandomColor();
-    rootCssVariables.style.setProperty('--paint_color', color);
+    pixel.style.backgroundColor = color;
+    // pixelColor.style.backgroundColor = color;
+    // rootCssVariables.style.setProperty('--paint_color', color);
 }

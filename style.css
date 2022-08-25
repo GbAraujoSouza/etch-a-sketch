@@ -1,5 +1,4 @@
 :root {
-    --paint_color: #000000;
     --pixel-size: 16;
 }
 
@@ -43,5 +42,5 @@ header {
 }
 
 .painted {
-    background-color: var(--paint_color);
+    background-color: #000;
 }
