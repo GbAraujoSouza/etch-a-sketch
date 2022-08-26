@@ -58,5 +58,4 @@ footer a:hover {
 .grid-pixel {
     border: 0.05px solid black;
     width: calc(100% / var(--pixel-size));
-    
 }

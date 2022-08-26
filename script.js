@@ -3,8 +3,11 @@ const gridSetBtn16 = document.querySelector('#small-grid');
 const gridSetBtn64 = document.querySelector('#large-grid');
 const rainbowColorBtn = document.querySelector('#rainbow');
 const blackColorBtn = document.querySelector('#black');
+const shadeColorBtn = document.querySelector('#shade');
 const clearBtn = document.querySelector('#clear-btn');
 const rootCssVariables = document.querySelector(':root');
+
+const SHADE_INCREMENT = 0.1;
 
 let gridSize = 16;
 let pixels = gridContainer.childNodes;
@@ -25,6 +28,7 @@ setUpGrid();
 clearBtn.addEventListener('click', clearGrid);
 rainbowColorBtn.addEventListener('click', changeState);
 blackColorBtn.addEventListener('click', changeState);
+shadeColorBtn.addEventListener('click', changeState);
 gridSetBtn16.addEventListener('click', e => setUpGrid(e.target.getAttribute('data-size')));
 gridSetBtn64.addEventListener('click', e => setUpGrid(e.target.getAttribute('data-size')));
 
@@ -45,7 +49,7 @@ function setUpGrid(size=gridSize) {
     // Add an event listener for each pixel to paint on click
     // Those events needed to be declared every time the grid is set up
     // outside this scope, it wouldn't catch the elements when the grid was restarted
-    pixels.forEach((element) => element.addEventListener('click', paintPixel));
+    pixels.forEach((element) => element.addEventListener('mouseenter', paintPixel));
 }
 
 function changeState() {
@@ -70,6 +74,9 @@ function paintPixel(){
         case 'rainbow':
             paintRandomColor(this);
         break;
+
+        case 'shade':
+            paintShadeColor(this);
     }
 }
 
@@ -89,11 +96,26 @@ function generateRandomColor() {
     return `#${red}${green}${blue}`;
 }
 
-function paintBlackColor(pixel){
-    pixel.style.backgroundColor = 'black';
+function paintBlackColor(pixel) {
+    pixel.style.backgroundColor = 'rgb(0, 0, 0)';
 }
 
 function paintRandomColor(pixel) {
     let color = generateRandomColor();
     pixel.style.backgroundColor = color;
+}
+
+function paintShadeColor(pixel) {
+    // The background is of type 'rgba(red, green, blue, alpha)'
+    // and here I am storing only the alpha number from the string
+    let currentAlpha = parseFloat(pixel.style.backgroundColor.slice(-4, -1));
+    if (!currentAlpha && pixel.style.backgroundColor != 'rgb(0, 0, 0)') {
+        if (pixel.style.backgroundColor == 'rgb(0, 0, 0)') {
+            return;
+        }
+        pixel.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';;
+    } else if (currentAlpha) {
+        pixel.style.backgroundColor = `rgba(0, 0, 0, ${currentAlpha + SHADE_INCREMENT})`;
+    }
+
 }
