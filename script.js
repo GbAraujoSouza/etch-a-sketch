@@ -17,31 +17,45 @@ shade -> Each pixel is painted with 10% of black color. Successive clicks adds a
 */
 let state = 'black';
 
+// start grid with a standard 16x16 size
+setUpGrid();
 
-
-for (let i = 0; i < gridSize*gridSize; i++) {
-    const pixel = document.createElement('div');
-    pixel.classList.toggle('grid-pixel');
-    pixel.classList.toggle('blank-pixel');
-    gridContainer.appendChild(pixel);
-}
-
-// Add an event listener for each pixel to paint on click
-pixels.forEach((element) => element.addEventListener('click', paintPixel));
 
 // event listener for the features buttons
 clearBtn.addEventListener('click', clearGrid);
 rainbowColorBtn.addEventListener('click', changeState);
 blackColorBtn.addEventListener('click', changeState);
+gridSetBtn16.addEventListener('click', e => setUpGrid(e.target.getAttribute('data-size')));
+gridSetBtn64.addEventListener('click', e => setUpGrid(e.target.getAttribute('data-size')));
 
 
+function setUpGrid(size=gridSize) {
+    
+    // clear grid container
+    gridContainer.innerHTML = '';
+
+    // Change the width of the pixel to fit the container
+    rootCssVariables.style.setProperty('--pixel-size', size);
+
+    for (let i = 0; i < size*size; i++) {
+        const pixel = document.createElement('div');
+        pixel.classList.add('grid-pixel');
+        gridContainer.appendChild(pixel);
+    }
+    // Add an event listener for each pixel to paint on click
+    // Those events needed to be declared every time the grid is set up
+    // outside this scope, it wouldn't catch the elements when the grid was restarted
+    pixels.forEach((element) => element.addEventListener('click', paintPixel));
+}
 
 function changeState() {
     state = this.id;
 }
 
 function clearGrid() {
-    pixels.forEach((element) => element.style.backgroundColor = 'white');
+    // The clear color needed to be transparent,
+    // otherwise the pixels at the corners would overlap the container's border.
+    pixels.forEach((element) => element.style.backgroundColor = 'transparent');
 }
 
 function paintPixel(){
