@@ -20,6 +20,14 @@ shade -> Each pixel is painted with 10% of black color. Successive clicks adds a
 */
 let state = 'black';
 
+/*
+This flag tracks if the user has clicked the mouse.
+Using this alongside with the 'mouseover' event, will create an effect of "click and drag" for the paining
+*/
+let mouseDownFlag = false;
+document.body.onmousedown = () => (mouseDownFlag = true);
+document.body.onmouseup = () => (mouseDownFlag = false);
+
 // start grid with a standard 16x16 size
 setUpGrid();
 
@@ -44,12 +52,10 @@ function setUpGrid(size=gridSize) {
     for (let i = 0; i < size*size; i++) {
         const pixel = document.createElement('div');
         pixel.classList.add('grid-pixel');
+        pixel.addEventListener('mouseover', paintPixel);
+        pixel.addEventListener('mousedown', paintPixel);
         gridContainer.appendChild(pixel);
     }
-    // Add an event listener for each pixel to paint on click
-    // Those events needed to be declared every time the grid is set up
-    // outside this scope, it wouldn't catch the elements when the grid was restarted
-    pixels.forEach((element) => element.addEventListener('mouseenter', paintPixel));
 }
 
 function changeState() {
@@ -62,7 +68,9 @@ function clearGrid() {
     pixels.forEach((element) => element.style.backgroundColor = 'transparent');
 }
 
-function paintPixel(){
+function paintPixel(e){
+    console.log(mouseDownFlag);
+    if (e.type == 'mouseover' && !mouseDownFlag) return;
     // paint pixel according with the current state
     let currentState = checkState();
     switch (currentState) {
