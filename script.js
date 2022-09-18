@@ -4,6 +4,7 @@ const gridSetBtn64 = document.querySelector('#large-grid');
 const rainbowColorBtn = document.querySelector('#rainbow');
 const blackColorBtn = document.querySelector('#black');
 const shadeColorBtn = document.querySelector('#shade');
+const eraserColorBtn = document.querySelector('#eraser');
 const clearBtn = document.querySelector('#clear-btn');
 const rootCssVariables = document.querySelector(':root');
 
@@ -29,7 +30,6 @@ document.body.onmousedown = () => (mouseDownFlag = true);
 document.body.onmouseup = () => (mouseDownFlag = false);
 
 // start grid with a standard 16x16 size
-setUpGrid();
 
 
 // event listener for the features buttons
@@ -37,6 +37,7 @@ clearBtn.addEventListener('click', clearGrid);
 rainbowColorBtn.addEventListener('click', changeState);
 blackColorBtn.addEventListener('click', changeState);
 shadeColorBtn.addEventListener('click', changeState);
+eraserColorBtn.addEventListener('click', changeState);
 gridSetBtn16.addEventListener('click', e => setUpGrid(e.target.getAttribute('data-size')));
 gridSetBtn64.addEventListener('click', e => setUpGrid(e.target.getAttribute('data-size')));
 
@@ -59,7 +60,47 @@ function setUpGrid(size=gridSize) {
 }
 
 function changeState() {
+    // remove active button based on current state
+    let currentState = state;
+    // update state
     state = this.id;
+
+    switch (currentState) {
+        case 'black':
+            blackColorBtn.classList.remove('active');
+        break;
+
+        case 'rainbow':
+            rainbowColorBtn.classList.remove('active');
+        break;
+
+        case 'shade':
+            shadeColorBtn.classList.remove('active');
+        break;
+
+        case 'eraser':
+            eraserColorBtn.classList.remove('active');
+        break;
+    }
+    switch (state) {
+        case 'black':
+            blackColorBtn.classList.add('active');
+        break;
+
+        case 'rainbow':
+            rainbowColorBtn.classList.add('active');
+        break;
+
+        case 'shade':
+            shadeColorBtn.classList.add('active');
+        break;
+
+        case 'eraser':
+            eraserColorBtn.classList.add('active');
+        break;
+    }
+
+    
 }
 
 function clearGrid() {
@@ -69,7 +110,6 @@ function clearGrid() {
 }
 
 function paintPixel(e){
-    console.log(mouseDownFlag);
     if (e.type == 'mouseover' && !mouseDownFlag) return;
     // paint pixel according with the current state
     let currentState = checkState();
@@ -85,6 +125,10 @@ function paintPixel(e){
 
         case 'shade':
             paintShadeColor(this);
+        break;
+
+        case 'eraser':
+            erasePixel(this);
     }
 }
 
@@ -117,9 +161,16 @@ function paintShadeColor(pixel) {
         if (pixel.style.backgroundColor == 'rgb(0, 0, 0)') {
             return;
         }
-        pixel.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';;
+        pixel.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
     } else if (currentAlpha) {
         pixel.style.backgroundColor = `rgba(0, 0, 0, ${currentAlpha + SHADE_INCREMENT})`;
     }
-
 }
+
+function erasePixel(pixel) {
+    pixel.style.backgroundColor = 'transparent';
+}
+
+window.onload = () => {
+    setUpGrid();
+  }
