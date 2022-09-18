@@ -85,15 +85,11 @@ function checkState(){
 }
 
 function generateRandomColor() {
-    let red = Math.round((Math.random() * 0xff)).toString(16);
-    let green = Math.round((Math.random() * 0xff)).toString(16);
-    let blue = Math.round((Math.random() * 0xff)).toString(16);
+    let red = Math.round((Math.random() * 256));
+    let green = Math.round((Math.random() * 256));
+    let blue = Math.round((Math.random() * 256));
 
-    // Don't allow white color, since color it is the background
-    while (`#${red}${green}${blue}` === '#ffffff') {
-        return generateRandomColor();
-    }
-    return `#${red}${green}${blue}`;
+    return `rgb(${red}, ${green}, ${blue})`;
 }
 
 function paintBlackColor(pixel) {
